@@ -1,23 +1,3 @@
-/*
-输入
-从标准输入（System.in）读取一个整数数组，例如：
-9,6,2,1,4,25,16,13,37,27,17,34,10
-
-构建 AVL 树
-
-普通插入规则：像标准 AVL 树一样插入奇数。
-特殊规则（偶数）：
-如果插入值是偶数 → 优先往右子树插入；
-如果右子树为空，则按标准规则插入；
-如果右子树不为空，则只遍历右子树，直到找到合适位置。
-插入完后需进行标准的 AVL 平衡调整。
-
-输出
-
-以 post-order（后序遍历） 打印结果。
- */
-
-
 import java.util.Scanner;
 
 public class AVL {
@@ -43,10 +23,6 @@ public class AVL {
         scanner.close();
         System.out.println("=== Pretty (sideways) ===");
         tree.printPretty();
-
-        System.out.println("\n=== Levels ===");
-        tree.printLevels();
-
     }
 
     // Node class
@@ -65,25 +41,6 @@ public class AVL {
     // AVL Tree class
     static class AVLTree {
         Node root;  // root of the AVL tree
-
-        // ===== Level-order per line =====
-        void printLevels() {
-            if (root == null) return;
-            java.util.Queue<Node> q = new java.util.ArrayDeque<>();
-            q.add(root);
-            while (!q.isEmpty()) {
-                int n = q.size();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < n; i++) {
-                    Node x = q.poll();
-                    int bf = height(x.left) - height(x.right);
-                    sb.append(x.key).append("[h=").append(x.height).append(",bf=").append(bf).append("] ");
-                    if (x.left != null) q.add(x.left);
-                    if (x.right != null) q.add(x.right);
-                }
-                System.out.println(sb.toString().trim());
-            }
-        }
 
         // ===== Pretty Print (sideways) =====
         void printPretty() {
@@ -136,9 +93,13 @@ public class AVL {
             Node T2 = x.right;
             x.right = y;
             y.left = T2;
-            y.height = Math.max(height(y.left), height(y.right)) + 1;
-            x.height = Math.max(height(x.left), height(x.right)) + 1;
+            y.height = updateHeight(y);
+            x.height = updateHeight(x);
             return x;
+        }
+
+        private int updateHeight(Node n) {
+            return Math.max(height(n.left), height(n.right)) + 1;
         }
 
         // left rotate
@@ -147,8 +108,8 @@ public class AVL {
             Node T2 = y.left;
             y.left = x;
             x.right = T2;
-            x.height = Math.max(height(x.left), height(x.right)) + 1;
-            y.height = Math.max(height(y.left), height(y.right)) + 1;
+            x.height = updateHeight(x);
+            y.height = updateHeight(y);
             return y;
         }
 
@@ -181,12 +142,12 @@ public class AVL {
             // balance the tree
             int diff = getDiffHeight(node);
             if (diff > 1) {
-                if (getDiffHeight(node.left)<0) {
+                if (getDiffHeight(node.left) < 0) {
                     node.left = leftRotate(node.left);
                 }
                 return rightRotate(node);
             } else if (diff < -1) {
-                if (getDiffHeight(node.right)>0) {
+                if (getDiffHeight(node.right) > 0) {
                     node.right = rightRotate(node.right);
                 }
                 return leftRotate(node);
