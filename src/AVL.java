@@ -3,14 +3,18 @@ import java.util.Scanner;
 public class AVL {
 
     public static void main(String[] args) {
+        // Read input from stdin
         Scanner scanner = new Scanner(System.in);
+        // Create an AVL tree
         AVLTree tree = new AVLTree();
 
+        // Read input line by line and insert numbers into the AVL tree
         if (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
             if (!line.isEmpty()) {
                 String[] numbers = line.split(",");
                 for (String number : numbers) {
+                    // View the tree step by step
                     System.out.println("==================================");
                     tree.printPrettyStepByStep(tree.root, "", true);
                     tree.insert(Integer.parseInt(number.trim()));
@@ -19,8 +23,10 @@ public class AVL {
 
             }
         }
+        // Print the tree in post-order
         tree.postOrder(tree.root);
         scanner.close();
+        // Print the tree
         System.out.println("=== Pretty (sideways) ===");
         tree.printPretty();
     }
@@ -32,6 +38,7 @@ public class AVL {
         Node right;
         int height;
 
+        // Constructor
         Node(int key) {
             this.key = key;
             this.height = 1;
@@ -42,7 +49,7 @@ public class AVL {
     static class AVLTree {
         Node root;  // root of the AVL tree
 
-        // ===== Pretty Print (sideways) =====
+
         void printPretty() {
             if (root == null) return;
             printPretty(root, "", true);
@@ -98,10 +105,6 @@ public class AVL {
             return x;
         }
 
-        private int updateHeight(Node n) {
-            return Math.max(height(n.left), height(n.right)) + 1;
-        }
-
         // left rotate
         Node leftRotate(Node x) {
             Node y = x.right;
@@ -113,18 +116,26 @@ public class AVL {
             return y;
         }
 
+        // update the height of a node
+        private int updateHeight(Node n) {
+            return Math.max(height(n.left), height(n.right)) + 1;
+        }
+
         // insert a node into the AVL tree
         Node insert(Node node, int key) {
             if (node == null) return new Node(key);
             // even number
             if (key % 2 == 0) {
+                // insert as usual
                 if (node.right == null) {
                     if (key < node.key) {
                         node.left = insert(node.left, key);
                     } else if (key > node.key) {
                         node.right = insert(node.right, key);
                     }
-                } else {
+                }
+                // insert to the right
+                else {
                     node.right = insert(node.right, key);
                 }
             }
@@ -138,21 +149,24 @@ public class AVL {
                 }
             }
             // update height
-            node.height = 1 + Math.max(height(node.left), height(node.right));
+            node.height = updateHeight(node);
             // balance the tree
             int diff = getDiffHeight(node);
             if (diff > 1) {
+                // LR case
                 if (getDiffHeight(node.left) < 0) {
                     node.left = leftRotate(node.left);
                 }
+                // LL case
                 return rightRotate(node);
             } else if (diff < -1) {
+                // RL case
                 if (getDiffHeight(node.right) > 0) {
                     node.right = rightRotate(node.right);
                 }
+                // RR case
                 return leftRotate(node);
             }
-
             return node;
         }
 
