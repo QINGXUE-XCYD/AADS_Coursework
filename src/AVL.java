@@ -72,7 +72,6 @@ public class AVL {
             if (node.right != null) {
                 printPrettyStepByStep(node.right, prefix + (isTail ? "│   " : "    "), false);
             }
-            int bf = height(node.left) - height(node.right);
             System.out.println(prefix + (isTail ? "└── " : "┌── ") + node.key);
             if (node.left != null) {
                 printPrettyStepByStep(node.left, prefix + (isTail ? "    " : "│   "), true);
