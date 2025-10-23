@@ -18,7 +18,7 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'    # 可改为 11 或 8（JDK≥7 即可）
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Prepare input
@@ -31,8 +31,9 @@ jobs:
         id: compile
         shell: bash
         run: |
+          cd src
           start_time=$(date +%s%3N)
-          javac -encoding UTF-8 -sourcepath ./src/ AVL.java
+          javac -encoding UTF-8 -sourcepath . AVL.java
           end_time=$(date +%s%3N)
           compile_time=$((end_time - start_time))
           echo "compile_time_ms=$compile_time" >> $GITHUB_OUTPUT
@@ -42,8 +43,9 @@ jobs:
         id: run
         shell: bash
         run: |
+          cd src
           start_time=$(date +%s%3N)
-          java -Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xss64m -Xms1920m -Xmx1920m AVL < Input.txt > Output.txt
+          java -Dfile.encoding=UTF-8 -XX:+UseSerialGC -Xss64m -Xms1920m -Xmx1920m AVL < ../Input.txt > ../Output.txt
           end_time=$(date +%s%3N)
           run_time=$((end_time - start_time))
           echo "run_time_ms=$run_time" >> $GITHUB_OUTPUT
