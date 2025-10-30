@@ -4,24 +4,26 @@ public class AVL {
 
     public static void main(String[] args) {
         // Read input from stdin
-        Scanner scanner = new Scanner(System.in);
-        // Create an AVL tree
-        AVLTree tree = new AVLTree();
+        try (Scanner scanner = new Scanner(System.in)) {
+            // Create an AVL tree
+            AVLTree tree = new AVLTree();
 
-        // Read input line by line and insert numbers into the AVL tree
-        if (scanner.hasNextLine()) {
-            String line = scanner.nextLine().trim();
-            if (!line.isEmpty()) {
-                String[] numbers = line.split(",");
-                for (String number : numbers) {
-                    // Insert the number into the AVL tree
-                    tree.insert(Integer.parseInt(number.trim()));
+            // Read input line by line and insert numbers into the AVL tree
+            if (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (!line.isEmpty()) {
+                    String[] numbers = line.split(",");
+                    for (String number : numbers) {
+                        // Insert the number into the AVL tree
+                        tree.insert(Integer.parseInt(number.trim()));
+                    }
                 }
             }
+            // Print the tree in post-order
+            tree.postOrder(tree.root);
+        } catch (Exception e) {
+            // e.printStackTrace();
         }
-        // Print the tree in post-order
-        tree.postOrder(tree.root);
-        scanner.close();
     }
 
     // Node class
