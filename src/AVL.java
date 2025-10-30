@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class AVL {
@@ -16,7 +17,7 @@ public class AVL {
                 for (String number : numbers) {
                     // View the tree step by step
                     System.out.println("==================================");
-                    tree.printPrettyStepByStep(tree.root, "", true);
+                    tree.printPrettyVertical(tree.root);
                     tree.insert(Integer.parseInt(number.trim()));
                 }
 
@@ -75,6 +76,41 @@ public class AVL {
             System.out.println(prefix + (isTail ? "└── " : "┌── ") + node.key);
             if (node.left != null) {
                 printPrettyStepByStep(node.left, prefix + (isTail ? "    " : "│   "), true);
+            }
+        }
+        private void printPrettyVertical(Node root) {
+            if (root == null) return;
+
+            int height = height(root);
+            int width = (int) Math.pow(2, height + 1); // 预留足够宽度
+            char[][] canvas = new char[height * 2][width];
+            for (char[] row : canvas) Arrays.fill(row, ' ');
+
+            fillCanvas(root, canvas, 0, width / 2, width / 4, height * 2);
+
+            // 输出
+            for (char[] row : canvas) {
+                System.out.println(new String(row));
+            }
+        }
+
+        private void fillCanvas(Node node, char[][] canvas, int row, int col, int gap, int totalRows) {
+            if (node == null || row >= totalRows) return;
+            String key = String.valueOf(node.key);
+            int start = col - key.length() / 2;
+            for (int i = 0; i < key.length(); i++) {
+                canvas[row][start + i] = key.charAt(i);
+            }
+
+            // 左子树
+            if (node.left != null) {
+                canvas[row + 1][col - gap / 2] = '/';
+                fillCanvas(node.left, canvas, row + 2, col - gap, gap / 2, totalRows);
+            }
+            // 右子树
+            if (node.right != null) {
+                canvas[row + 1][col + gap / 2] = '\\';
+                fillCanvas(node.right, canvas, row + 2, col + gap, gap / 2, totalRows);
             }
         }
 
