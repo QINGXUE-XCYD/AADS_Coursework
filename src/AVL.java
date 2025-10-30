@@ -120,67 +120,85 @@ public class AVL {
             return Math.max(height(n.left), height(n.right)) + 1;
         }
 
-        // insert a node into the AVL tree
-        Node insert(Node node, int key) {
-            if (node == null) return new Node(key);
-            // even number
-            if (key % 2 == 0) {
-                // insert as usual
-                if (node.right == null) {
-                    if (key < node.key) {
-                        node.left = insert(node.left, key);
-                    } else if (key > node.key) {
-                        node.right = insert(node.right, key);
-                    }
-                }
-                // insert to the right
-                else {
-                    node.right = insert(node.right, key);
-                }
-            }
-            // odd number
-            else {
-                // insert as usual
-                if (key < node.key) {
-                    node.left = insert(node.left, key);
-                } else if (key > node.key) {
-                    node.right = insert(node.right, key);
-                }
+        // balance the tree
+        private Node balance(Node n) {
+            if (n == null) {
+                return null;
             }
             // update height
-            node.height = updateHeight(node);
-            // balance the tree
-            int diff = getDiffHeight(node);
-            if (diff > 1) {
-                // LR case
-                if (getDiffHeight(node.left) < 0) {
-                    node.left = leftRotate(node.left);
-                }
-                // LL case
-                return rightRotate(node);
-            } else if (diff < -1) {
-                // RL case
-                if (getDiffHeight(node.right) > 0) {
-                    node.right = rightRotate(node.right);
-                }
-                // RR case
-                return leftRotate(node);
+            n.height = updateHeight(n);
+            // get the difference in height between left and right subtrees
+            int diff = getDiffHeight(n);
+            // LL case
+            if (diff > 1 && getDiffHeight(n.left) >= 0) {
+                return rightRotate(n);
             }
-            return node;
+            // LR case
+            if (diff > 1 && getDiffHeight(n.left) < 0) {
+                n.left = leftRotate(n.left);
+                return rightRotate(n);
+            }
+            // RR case
+            if (diff < -1 && getDiffHeight(n.right) <= 0) {
+                return leftRotate(n);
+            }
+            // RL case
+            if (diff < -1 && getDiffHeight(n.right) > 0) {
+                n.right = rightRotate(n.right);
+                return leftRotate(n);
+            }
+            return n;
         }
 
-        // insert
+        // usual standard insert
+        private Node usualInsert(Node node, int key) {
+            if (node == null) {
+                return new Node(key);
+            }
+            if (key < node.key) {
+                node.left = usualInsert(node.left, key);
+            } else if (key > node.key) {
+                node.right = usualInsert(node.right, key);
+            } else {
+                return node;    // same key
+            }
+            return balance(node);
+        }
+
+        // special insert for even values
+        private Node specialInsert(Node node, int key) {
+            if (node == null) {
+                return new Node(key);
+            }
+            // even number goes to the right subtree
+            if (node.right == null) {
+                // if right subtree is null, insert as usual
+                node.right = new Node(key);
+            } else {
+                // if right subtree is not null, insert to the right subtree
+                node.right = specialInsert(node.right, key);
+            }
+            return balance(node);
+        }
+
+        // insert a node into the AVL tree
         void insert(int key) {
-            root = insert(root, key);
+            if (key % 2 == 0) {
+                // even number
+                root = specialInsert(root, key);
+            } else {
+                // odd number
+                root = usualInsert(root, key);
+            }
         }
 
-        // post-order traversal
-        void postOrder(Node node) {
-            if (node != null) {
-                postOrder(node.left);
-                postOrder(node.right);
-                System.out.println(node.key);
-            }
+    // post-order traversal
+    void postOrder(Node node) {
+        if (node != null) {
+            postOrder(node.left);
+            postOrder(node.right);
+            System.out.println(node.key);
         }
     }
+}
 }
