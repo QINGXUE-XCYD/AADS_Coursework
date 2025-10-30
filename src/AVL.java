@@ -14,21 +14,14 @@ public class AVL {
             if (!line.isEmpty()) {
                 String[] numbers = line.split(",");
                 for (String number : numbers) {
-                    // View the tree step by step
-                    System.out.println("==================================");
-                    tree.printPrettyStepByStep(tree.root, "", true);
+                    // Insert the number into the AVL tree
                     tree.insert(Integer.parseInt(number.trim()));
                 }
-
-
             }
         }
         // Print the tree in post-order
         tree.postOrder(tree.root);
         scanner.close();
-        // Print the tree
-        System.out.println("=== Pretty (sideways) ===");
-        tree.printPretty();
     }
 
     // Node class
@@ -48,36 +41,6 @@ public class AVL {
     // AVL Tree class
     static class AVLTree {
         Node root;  // root of the AVL tree
-
-
-        void printPretty() {
-            if (root == null) return;
-            printPretty(root, "", true);
-        }
-
-        private void printPretty(Node node, String prefix, boolean isTail) {
-            if (node == null) return;
-            if (node.right != null) {
-                printPretty(node.right, prefix + (isTail ? "│   " : "    "), false);
-            }
-            int bf = height(node.left) - height(node.right);
-            System.out.println(prefix + (isTail ? "└── " : "┌── ") + node.key + " (h=" + node.height + ", bf=" + bf + ")");
-            if (node.left != null) {
-                printPretty(node.left, prefix + (isTail ? "    " : "│   "), true);
-            }
-        }
-
-        private void printPrettyStepByStep(Node node, String prefix, boolean isTail) {
-            if (node == null) return;
-            if (node.right != null) {
-                printPrettyStepByStep(node.right, prefix + (isTail ? "│   " : "    "), false);
-            }
-            System.out.println(prefix + (isTail ? "└── " : "┌── ") + node.key);
-            if (node.left != null) {
-                printPrettyStepByStep(node.left, prefix + (isTail ? "    " : "│   "), true);
-            }
-        }
-
 
         // get the height of a node
         int height(Node n) {
@@ -192,13 +155,13 @@ public class AVL {
             }
         }
 
-    // post-order traversal
-    void postOrder(Node node) {
-        if (node != null) {
-            postOrder(node.left);
-            postOrder(node.right);
-            System.out.println(node.key);
+        // post-order traversal
+        void postOrder(Node node) {
+            if (node != null) {
+                postOrder(node.left);
+                postOrder(node.right);
+                System.out.println(node.key);
+            }
         }
     }
-}
 }
