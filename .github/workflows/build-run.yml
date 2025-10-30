@@ -55,6 +55,5 @@ jobs:
         run: |
           echo "===== Output.txt ====="
           cat Output.txt
-          echo ""
           echo "Compile time: ${{ steps.compile.outputs.compile_time_ms }} ms"
           echo "Run time: ${{ steps.run.outputs.run_time_ms }} ms"
